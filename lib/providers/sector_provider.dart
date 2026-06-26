@@ -117,4 +117,36 @@ class SectorProvider with ChangeNotifier {
       return false;
     }
   }
+
+  // Editar datos de un usuario existente
+  Future<bool> editUser(UserModel user) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _firestoreService.updateUser(user);
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // Eliminar un usuario (revocar acceso)
+  Future<bool> deleteUser(String uid) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _firestoreService.deleteUser(uid);
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
 }

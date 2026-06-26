@@ -51,10 +51,10 @@ class _ManageUsersViewState extends State<ManageUsersView> {
 
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return StatefulBuilder(
-          builder: (context, setDialogState) {
-            final sectorProvider = Provider.of<SectorProvider>(context);
+          builder: (statefulContext, setDialogState) {
+            final sectorProvider = Provider.of<SectorProvider>(statefulContext);
             
             return AlertDialog(
               title: const Text('Registrar Nuevo Usuario'),
@@ -130,7 +130,7 @@ class _ManageUsersViewState extends State<ManageUsersView> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () => Navigator.of(statefulContext).pop(),
                   child: const Text('Cancelar'),
                 ),
                 ElevatedButton(
@@ -141,13 +141,13 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                         _apellidosCtrl.text.isEmpty ||
                         _phoneCtrl.text.isEmpty ||
                         _emailCtrl.text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
+                      ScaffoldMessenger.of(statefulContext).showSnackBar(
                         const SnackBar(content: Text('Por favor completa todos los campos')),
                       );
                       return;
                     }
 
-                    final provider = Provider.of<SectorProvider>(context, listen: false);
+                    final provider = Provider.of<SectorProvider>(statefulContext, listen: false);
                     final passwordGenerada = await provider.createUser(
                       cedula: _cedulaCtrl.text.trim(),
                       nombres: _nombresCtrl.text.trim(),
@@ -159,13 +159,14 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                     );
 
                     if (mounted) {
-                      Navigator.of(context).pop(); // Cierra el modal
+                      Navigator.of(statefulContext).pop(); // Cierra el modal de creación
                       if (passwordGenerada != null) {
                         // Mostrar diálogo especial con la contraseña generada VTE...
+                        // Usamos el 'context' de la página principal para que persista
                         showDialog(
                           context: context,
                           barrierDismissible: false,
-                          builder: (context) => AlertDialog(
+                          builder: (passwordDialogContext) => AlertDialog(
                             title: const Row(
                               children: [
                                 Icon(Icons.check_circle, color: Colors.green),
@@ -177,7 +178,7 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('El usuario ha sido registrado exitosamente con clave temporal.'),
+                                const Text('El usuario ha sido registrado exitosamente con clave temporal.'),
                                 const SizedBox(height: 16),
                                 const Text('Contraseña Inicial:', style: TextStyle(fontWeight: FontWeight.bold)),
                                 Container(
@@ -209,7 +210,7 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                             ),
                             actions: [
                               TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
+                                onPressed: () => Navigator.of(passwordDialogContext).pop(),
                                 child: const Text('Entendido'),
                               )
                             ],
@@ -222,7 +223,10 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                       }
                     }
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF203A43)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF203A43),
+                    foregroundColor: Colors.white,
+                  ),
                   child: const Text('Registrar'),
                 )
               ],
@@ -230,6 +234,187 @@ class _ManageUsersViewState extends State<ManageUsersView> {
           },
         );
       },
+    );
+  }
+
+  // Diálogo para editar los datos de un usuario
+  void _showEditUserDialog(UserModel userToEdit, UserModel currentUser) {
+    _cedulaCtrl.text = userToEdit.cedula;
+    _nombresCtrl.text = userToEdit.nombres;
+    _apellidosCtrl.text = userToEdit.apellidos;
+    _phoneCtrl.text = userToEdit.telefono;
+    _emailCtrl.text = userToEdit.correo;
+
+    String selectedRol = userToEdit.rol;
+    String? selectedSectorId = userToEdit.sectorId;
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (statefulContext, setDialogState) {
+            final sectorProvider = Provider.of<SectorProvider>(statefulContext);
+            return AlertDialog(
+              title: Text('Editar Usuario: ${userToEdit.nombres}'),
+              content: SingleChildScrollView(
+                child: Form(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        controller: _cedulaCtrl,
+                        decoration: const InputDecoration(labelText: 'Cédula / Identificación'),
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _nombresCtrl,
+                        decoration: const InputDecoration(labelText: 'Nombres'),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _apellidosCtrl,
+                        decoration: const InputDecoration(labelText: 'Apellidos'),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _phoneCtrl,
+                        decoration: const InputDecoration(labelText: 'Teléfono'),
+                        keyboardType: TextInputType.phone,
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _emailCtrl,
+                        decoration: const InputDecoration(labelText: 'Correo Electrónico'),
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 8),
+                      // Selección de Rol (Solo Coordinador de Campaña y si no es el administrador mismo)
+                      if (currentUser.rol == 'coordinador_campana' && userToEdit.rol != 'coordinador_campana') ...[
+                        DropdownButtonFormField<String>(
+                          value: selectedRol,
+                          decoration: const InputDecoration(labelText: 'Rol'),
+                          items: const [
+                            DropdownMenuItem(value: 'coordinador_brigada', child: Text('Coordinador de Brigada')),
+                            DropdownMenuItem(value: 'vacunador', child: Text('Vacunador')),
+                          ],
+                          onChanged: (v) {
+                            setDialogState(() {
+                              selectedRol = v!;
+                              if (selectedRol == 'coordinador_brigada') {
+                                selectedSectorId = null;
+                              }
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                      // Selección de Sector (Solo si es vacunador)
+                      if (selectedRol == 'vacunador') ...[
+                        DropdownButtonFormField<String>(
+                          value: selectedSectorId,
+                          decoration: const InputDecoration(labelText: 'Asignar Sector'),
+                          items: sectorProvider.sectors.map((sector) {
+                            return DropdownMenuItem(value: sector.id, child: Text(sector.nombre));
+                          }).toList(),
+                          onChanged: (v) => setDialogState(() => selectedSectorId = v),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(statefulContext).pop(),
+                  child: const Text('Cancelar'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (_cedulaCtrl.text.isEmpty ||
+                        _nombresCtrl.text.isEmpty ||
+                        _apellidosCtrl.text.isEmpty ||
+                        _phoneCtrl.text.isEmpty ||
+                        _emailCtrl.text.isEmpty) {
+                      ScaffoldMessenger.of(statefulContext).showSnackBar(
+                        const SnackBar(content: Text('Por favor completa todos los campos')),
+                      );
+                      return;
+                    }
+
+                    final updatedUser = UserModel(
+                      uid: userToEdit.uid,
+                      cedula: _cedulaCtrl.text.trim(),
+                      nombres: _nombresCtrl.text.trim(),
+                      apellidos: _apellidosCtrl.text.trim(),
+                      telefono: _phoneCtrl.text.trim(),
+                      correo: _emailCtrl.text.trim(),
+                      rol: selectedRol,
+                      sectorId: selectedSectorId,
+                      cambioPasswordObligatorio: userToEdit.cambioPasswordObligatorio,
+                    );
+
+                    final success = await sectorProvider.editUser(updatedUser);
+
+                    if (mounted) {
+                      Navigator.of(statefulContext).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(success ? 'Usuario actualizado con éxito' : 'Error al actualizar usuario'),
+                          backgroundColor: success ? Colors.green : Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF203A43),
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Guardar'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // Diálogo para confirmar la eliminación de un usuario
+  void _confirmDeleteUser(UserModel userToDelete) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Confirmar Eliminación'),
+        content: Text('¿Estás seguro de que deseas eliminar al usuario "${userToDelete.nombreCompleto}"?\n\nEsta acción borrará su perfil de Firestore y revocará su acceso.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final provider = Provider.of<SectorProvider>(context, listen: false);
+              final success = await provider.deleteUser(userToDelete.uid);
+
+              if (mounted) {
+                Navigator.of(dialogContext).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(success ? 'Usuario eliminado con éxito' : 'Error al eliminar usuario'),
+                    backgroundColor: success ? Colors.green : Colors.red,
+                  ),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -368,13 +553,32 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                             ),
                           ],
                         ),
-                        trailing: currentUser.rol == 'coordinador_brigada' && user.rol == 'vacunador'
-                            ? IconButton(
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (currentUser.rol == 'coordinador_campana' ||
+                                (currentUser.rol == 'coordinador_brigada' &&
+                                    user.rol == 'vacunador' &&
+                                    user.sectorId == currentUser.sectorId)) ...[
+                              IconButton(
+                                icon: const Icon(Icons.edit_outlined, color: Color(0xFF203A43)),
+                                tooltip: 'Editar Usuario',
+                                onPressed: () => _showEditUserDialog(user, currentUser),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                                tooltip: 'Eliminar Usuario',
+                                onPressed: () => _confirmDeleteUser(user),
+                              ),
+                            ],
+                            if (currentUser.rol == 'coordinador_brigada' && user.rol == 'vacunador')
+                              IconButton(
                                 icon: const Icon(Icons.swap_horiz, color: Color(0xFF203A43)),
                                 tooltip: 'Reasignar / Cambiar Sector',
                                 onPressed: () => _showReassignSectorDialog(user),
-                              )
-                            : null,
+                              ),
+                          ],
+                        ),
                       ),
                     );
                   },

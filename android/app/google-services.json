@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "537428888311",
+    "project_id": "appmprueba2vacunacion",
+    "storage_bucket": "appmprueba2vacunacion.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537428888311:android:ae30b2f16158d71685a1f2",
+        "android_client_info": {
+          "package_name": "com.vacunacion.RG.vacunacion_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDao_gj91XP2mS0S5KLqkgEeP53bZqMIQ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

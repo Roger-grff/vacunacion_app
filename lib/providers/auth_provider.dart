@@ -5,10 +5,12 @@ import '../services/auth_service.dart';
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
   UserModel? _userModel;
+  bool _isInitialLoading = true;
   bool _isLoading = false;
   String? _errorMessage;
 
   UserModel? get userModel => _userModel;
+  bool get isInitialLoading => _isInitialLoading;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _authService.currentUser != null && _userModel != null;
@@ -22,12 +24,12 @@ class AuthProvider with ChangeNotifier {
   Future<void> _initUser() async {
     final user = _authService.currentUser;
     if (user != null) {
-      _isLoading = true;
+      _isInitialLoading = true;
       notifyListeners();
       _userModel = await _authService.getUserData(user.uid);
-      _isLoading = false;
-      notifyListeners();
     }
+    _isInitialLoading = false;
+    notifyListeners();
   }
 
   // Iniciar Sesión

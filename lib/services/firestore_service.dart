@@ -100,6 +100,16 @@ class FirestoreService {
     });
   }
 
+  // Actualizar datos completos de un usuario en Firestore
+  Future<void> updateUser(UserModel user) async {
+    await _firestore.collection('users').doc(user.uid).update(user.toMap());
+  }
+
+  // Eliminar el documento de usuario en Firestore (revoca su acceso)
+  Future<void> deleteUser(String uid) async {
+    await _firestore.collection('users').doc(uid).delete();
+  }
+
   // --- SECTORES ---
 
   // Crear Sector
