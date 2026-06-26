@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
-import '../shared/main_navigation_screen.dart';
+import '../../providers/autenticacion_proveedor.dart';
+import '../shared/pantalla_navegacion_principal.dart';
 
 class ChangePasswordView extends StatefulWidget {
   const ChangePasswordView({super.key});
@@ -189,3 +189,4 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     );
   }
 }
+

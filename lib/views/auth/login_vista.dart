@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
-import 'change_password_view.dart';
-import 'forgot_password_view.dart';
-import '../shared/main_navigation_screen.dart';
-import '../../services/dummy_data_service.dart';
+import '../../providers/autenticacion_proveedor.dart';
+import 'cambiar_contrasena_vista.dart';
+import 'recuperar_contrasena_vista.dart';
+import '../shared/pantalla_navegacion_principal.dart';
+import '../../services/datos_prueba_servicio.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -307,3 +307,4 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 }
+

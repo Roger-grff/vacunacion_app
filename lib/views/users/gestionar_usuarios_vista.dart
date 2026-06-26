@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/sector_provider.dart';
-import '../../models/user_model.dart';
-import '../../models/sector_model.dart';
-import '../../services/firestore_service.dart';
+import '../../providers/autenticacion_proveedor.dart';
+import '../../providers/sector_proveedor.dart';
+import '../../models/usuario_modelo.dart';
+import '../../models/sector_modelo.dart';
+import '../../services/firestore_servicio.dart';
 
 class ManageUsersView extends StatefulWidget {
   const ManageUsersView({super.key});
@@ -588,3 +588,4 @@ class _ManageUsersViewState extends State<ManageUsersView> {
     );
   }
 }
+

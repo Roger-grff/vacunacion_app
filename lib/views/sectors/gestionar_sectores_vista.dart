@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/sector_provider.dart';
-import '../../models/sector_model.dart';
+import '../../providers/sector_proveedor.dart';
+import '../../models/sector_modelo.dart';
 
 class ManageSectorsView extends StatefulWidget {
   const ManageSectorsView({super.key});
@@ -195,3 +195,4 @@ class _ManageSectorsViewState extends State<ManageSectorsView> {
     );
   }
 }
+

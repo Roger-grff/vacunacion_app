@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'providers/auth_provider.dart';
-import 'providers/sector_provider.dart';
-import 'providers/vaccination_provider.dart';
-import 'views/auth/login_view.dart';
-import 'views/auth/change_password_view.dart';
-import 'views/shared/main_navigation_screen.dart';
+import 'providers/autenticacion_proveedor.dart';
+import 'providers/sector_proveedor.dart';
+import 'providers/vacunacion_proveedor.dart';
+import 'views/auth/login_vista.dart';
+import 'views/auth/cambiar_contrasena_vista.dart';
+import 'views/shared/pantalla_navegacion_principal.dart';
 
 void main() async {
   // Asegurar que los bindings de Flutter estén listos
@@ -115,3 +115,4 @@ class AuthenticationWrapper extends StatelessWidget {
     return const MainNavigationScreen();
   }
 }
+

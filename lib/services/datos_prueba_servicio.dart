@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../models/user_model.dart';
-import '../models/sector_model.dart';
-import '../models/vaccination_model.dart';
+import '../models/usuario_modelo.dart';
 
 class DummyDataService {
   // Función para cargar datos de prueba completos en tu proyecto Firebase
@@ -134,7 +132,7 @@ class DummyDataService {
           telefono: u['telefono'] as String,
           correo: u['email'] as String,
           rol: u['rol'] as String,
-          sectorId: u['sectorId'] as String?,
+          sectorId: u['sectorId'],
           cambioPasswordObligatorio: false, // Listo para usar, sin obligar cambio para agilizar pruebas
         );
 
@@ -196,3 +194,4 @@ class DummyDataService {
     return results;
   }
 }
+

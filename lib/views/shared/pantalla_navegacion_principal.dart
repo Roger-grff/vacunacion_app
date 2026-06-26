@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import '../../providers/auth_provider.dart';
-import '../dashboard/dashboard_view.dart';
-import '../vaccinations/vaccination_list_view.dart';
-import '../sectors/manage_sectors_view.dart';
-import '../users/manage_users_view.dart';
-import 'sidebar_menu.dart';
+import '../../providers/autenticacion_proveedor.dart';
+import '../dashboard/dashboard_vista.dart';
+import '../vaccinations/lista_vacunacion_vista.dart';
+import '../sectors/gestionar_sectores_vista.dart';
+import '../users/gestionar_usuarios_vista.dart';
+import 'menu_lateral.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -103,3 +103,4 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     );
   }
 }
+

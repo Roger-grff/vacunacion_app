@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
+import '../../providers/autenticacion_proveedor.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});
@@ -156,3 +156,4 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
     );
   }
 }
+

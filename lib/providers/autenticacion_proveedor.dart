@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
-import '../services/auth_service.dart';
+import '../models/usuario_modelo.dart';
+import '../services/autenticacion_servicio.dart';
 
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -116,3 +116,4 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 }
+

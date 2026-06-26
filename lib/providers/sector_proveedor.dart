@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/sector_model.dart';
-import '../models/user_model.dart';
-import '../services/firestore_service.dart';
+import '../models/sector_modelo.dart';
+import '../models/usuario_modelo.dart';
+import '../services/firestore_servicio.dart';
 
 class SectorProvider with ChangeNotifier {
   final FirestoreService _firestoreService = FirestoreService();
@@ -150,3 +150,4 @@ class SectorProvider with ChangeNotifier {
     }
   }
 }
+
