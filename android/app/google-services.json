@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "661793489539",
+    "project_id": "app-gamer-77b9f",
+    "storage_bucket": "app-gamer-77b9f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:661793489539:android:ebf05ad86bc57c1aaed1b6",
+        "android_client_info": {
+          "package_name": "com.example.vacunacion_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiX1GrWllemCr_xKzlUHXWwCOI0Cu8P1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:661793489539:android:c0cb20d4767e0cf8aed1b6",
+        "android_client_info": {
+          "package_name": "com.vacunacion.RG.vacunacion_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiX1GrWllemCr_xKzlUHXWwCOI0Cu8P1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
