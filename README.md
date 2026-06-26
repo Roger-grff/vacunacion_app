@@ -97,31 +97,6 @@ lib/
 
 ---
 
-## 🔄 Estrategia de Sincronización Híbrida
-
-El flujo técnico asegura que ningún registro de dosis aplicada se pierda, priorizando la durabilidad del dato local:
-
-```mermaid
-graph TD
-    A[Formulario de Vacunación] --> B{¿Hay Conexión a Internet?}
-    B -- Sí --> C[Subir foto a Firebase Storage]
-    C --> D[Guardar registro en Firestore]
-    D --> E[Éxito en Pantalla]
-    
-    B -- No / Fallo de Red --> F[Copiar foto temporal al almacenamiento de la App]
-    F --> G[Registrar detalles del formulario y ruta local en SQLite]
-    G --> H[Incrementar contador de "Pendientes" en Dashboard]
-    
-    I[Listener de Red / Sincronización Manual] --> J{¿Conexión recuperada?}
-    J -- Sí --> K[Leer cola de SQLite]
-    K --> L[Subir imágenes locales a Firebase Storage]
-    L --> M[Guardar registros con nuevas URLs en Firestore]
-    M --> N[Eliminar de SQLite y limpiar foto del disco local]
-    N --> O[Actualizar estadísticas en Dashboard]
-```
-
----
-
 ## 👥 Roles y Permisos
 
 La aplicación define niveles de acceso estrictos basados en el rol del usuario asignado:
