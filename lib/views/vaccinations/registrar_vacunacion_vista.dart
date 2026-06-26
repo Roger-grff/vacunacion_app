@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/vaccination_provider.dart';
-import '../../models/vaccination_model.dart';
-import 'map_picker_view.dart';
+import '../../providers/autenticacion_proveedor.dart';
+import '../../providers/vacunacion_proveedor.dart';
+import '../../models/vacunacion_modelo.dart';
+import 'selector_mapa_vista.dart';
 
 class RegisterVaccinationView extends StatefulWidget {
   final VaccinationModel? vaccinationToEdit;
@@ -395,3 +395,4 @@ class _RegisterVaccinationViewState extends State<RegisterVaccinationView> {
     );
   }
 }
+

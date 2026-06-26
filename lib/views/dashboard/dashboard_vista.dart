@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/vaccination_provider.dart';
-import '../../providers/sector_provider.dart';
-import '../../models/sector_model.dart';
+import '../../providers/autenticacion_proveedor.dart';
+import '../../providers/vacunacion_proveedor.dart';
+import '../../providers/sector_proveedor.dart';
+import '../../models/sector_modelo.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -311,3 +311,4 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 }
+

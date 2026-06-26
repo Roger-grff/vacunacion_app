@@ -4,10 +4,10 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';
-import '../models/vaccination_model.dart';
-import '../services/local_db_service.dart';
-import '../services/firestore_service.dart';
-import '../services/storage_service.dart';
+import '../models/vacunacion_modelo.dart';
+import '../services/base_datos_local_servicio.dart';
+import '../services/firestore_servicio.dart';
+import '../services/storage_servicio.dart';
 
 class VaccinationProvider with ChangeNotifier {
   final FirestoreService _firestoreService = FirestoreService();
@@ -237,3 +237,4 @@ class VaccinationProvider with ChangeNotifier {
     }
   }
 }
+

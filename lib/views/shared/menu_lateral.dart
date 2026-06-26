@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/vaccination_provider.dart';
-import '../auth/login_view.dart';
+import '../../providers/autenticacion_proveedor.dart';
+import '../../providers/vacunacion_proveedor.dart';
+import '../auth/login_vista.dart';
 
 class SidebarMenu extends StatelessWidget {
   const SidebarMenu({super.key});
@@ -207,3 +207,4 @@ class SidebarMenu extends StatelessWidget {
     );
   }
 }
+

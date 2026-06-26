@@ -2,9 +2,9 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../models/user_model.dart';
-import '../models/sector_model.dart';
-import '../models/vaccination_model.dart';
+import '../models/usuario_modelo.dart';
+import '../models/sector_modelo.dart';
+import '../models/vacunacion_modelo.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -100,6 +100,16 @@ class FirestoreService {
     });
   }
 
+  // Actualizar datos completos de un usuario en Firestore
+  Future<void> updateUser(UserModel user) async {
+    await _firestore.collection('users').doc(user.uid).update(user.toMap());
+  }
+
+  // Eliminar el documento de usuario en Firestore (revoca su acceso)
+  Future<void> deleteUser(String uid) async {
+    await _firestore.collection('users').doc(uid).delete();
+  }
+
   // --- SECTORES ---
 
   // Crear Sector
@@ -130,7 +140,7 @@ class FirestoreService {
   Stream<List<SectorModel>> getSectors() {
     return _firestore.collection('sectors').orderBy('creadoEn', descending: true).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        return SectorModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+        return SectorModel.fromMap(doc.data(), doc.id);
       }).toList();
     });
   }
@@ -165,3 +175,4 @@ class FirestoreService {
     });
   }
 }
+

@@ -1,6 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../models/vaccination_model.dart';
+import '../models/vacunacion_modelo.dart';
 
 class LocalDbService {
   static final LocalDbService instance = LocalDbService._init();
@@ -95,3 +95,4 @@ class LocalDbService {
     }
   }
 }
+
