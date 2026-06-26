@@ -47,7 +47,6 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-<<<<<<< HEAD
     apiKey: 'AIzaSyBTBU42KsfUJw00gwKx791T2fJ5Hz5z2Qk',
     appId: '1:661793489539:web:3a64c0cf75bd6922aed1b6',
     messagingSenderId: '661793489539',
@@ -70,30 +69,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '661793489539',
     projectId: 'app-gamer-77b9f',
     storageBucket: 'app-gamer-77b9f.firebasestorage.app',
-=======
-    apiKey: 'AIzaSyDXNrI88YTryRjxZfMwIU08ib287ZawS3Q',
-    appId: '1:537428888311:web:593d6e66cf0c0c4585a1f2',
-    messagingSenderId: '537428888311',
-    projectId: 'appmprueba2vacunacion',
-    authDomain: 'appmprueba2vacunacion.firebaseapp.com',
-    storageBucket: 'appmprueba2vacunacion.firebasestorage.app',
-  );
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDao_gj91XP2mS0S5KLqkgEeP53bZqMIQ4',
-    appId: '1:537428888311:android:ae30b2f16158d71685a1f2',
-    messagingSenderId: '537428888311',
-    projectId: 'appmprueba2vacunacion',
-    storageBucket: 'appmprueba2vacunacion.firebasestorage.app',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDe3p6VS6EXVXaPXO_jgTyOSFPkLAPv8ZI',
-    appId: '1:537428888311:ios:6ff131968422bac285a1f2',
-    messagingSenderId: '537428888311',
-    projectId: 'appmprueba2vacunacion',
-    storageBucket: 'appmprueba2vacunacion.firebasestorage.app',
->>>>>>> 995c9c65256ce180a209a398c9ec485d6b33e958
     iosBundleId: 'com.vacunacion.RG.vacunacionApp',
   );
 }
