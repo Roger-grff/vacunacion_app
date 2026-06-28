@@ -351,7 +351,7 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                       correo: _emailCtrl.text.trim(),
                       rol: selectedRol,
                       sectorId: selectedSectorId,
-                      cambioPasswordObligatorio: userToEdit.cambioPasswordObligatorio,
+                      cambioPassword: userToEdit.cambioPassword,
                     );
 
                     final success = await sectorProvider.editUser(updatedUser);
@@ -515,7 +515,7 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                     // Encontrar nombre del sector del usuario
                     final sectorName = sectorProvider.sectors.firstWhere(
                       (s) => s.id == user.sectorId,
-                      orElse: () => SectorModel(id: '', nombre: 'Sin Asignar', creadoEn: DateTime.now()),
+                      orElse: () => SectorModel(id: '', nombre: 'Sin Asignar', parroquia: '', zona: '', activo: false),
                     ).nombre;
 
                     String formatRole(String rol) {

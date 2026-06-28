@@ -20,7 +20,7 @@ class AuthService {
   // Obtener información adicional del usuario desde Firestore
   Future<UserModel?> getUserData(String uid) async {
     try {
-      final doc = await _firestore.collection('users').doc(uid).get();
+      final doc = await _firestore.collection('usuarios').doc(uid).get();
       if (doc.exists && doc.data() != null) {
         return UserModel.fromMap(doc.data()!, uid);
       }
@@ -38,7 +38,7 @@ class AuthService {
       await user.updatePassword(newPassword);
       
       // 2. Actualizar flag en Firestore
-      await _firestore.collection('users').doc(user.uid).update({
+      await _firestore.collection('usuarios').doc(user.uid).update({
         'cambioPasswordObligatorio': false,
       });
     } else {

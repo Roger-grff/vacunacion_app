@@ -12,23 +12,92 @@ class DummyDataService {
     try {
       print('Iniciando carga de datos iniciales...');
 
-      // 1. Crear Sectores con IDs fijos para relacionar
-      final sectores = [
-        {'id': 'sec_norte', 'nombre': 'Sector Norte'},
-        {'id': 'sec_sur', 'nombre': 'Sector Sur'},
-        {'id': 'sec_centro', 'nombre': 'Sector Centro'},
-      ];
+      // 1. Crear Sectores con IDs fijos
+final sectores = [
+  {
+    'id': 'la_carolina',
+    'nombre': 'La Carolina',
+    'parroquia': 'Iñaquito',
+    'zona': 'Norte',
+    'activo': true,
+  },
+  {
+    'id': 'la_mariscal',
+    'nombre': 'La Mariscal',
+    'parroquia': 'Mariscal Sucre',
+    'zona': 'Centro',
+    'activo': true,
+  },
+  {
+    'id': 'quitumbe',
+    'nombre': 'Quitumbe',
+    'parroquia': 'Quitumbe',
+    'zona': 'Sur',
+    'activo': true,
+  },
+  {
+    'id': 'calderon',
+    'nombre': 'Calderón',
+    'parroquia': 'Calderón',
+    'zona': 'Norte',
+    'activo': true,
+  },
+  {
+    'id': 'carcelen',
+    'nombre': 'Carcelén',
+    'parroquia': 'Carcelén',
+    'zona': 'Norte',
+    'activo': true,
+  },
+  {
+    'id': 'conocoto',
+    'nombre': 'Conocoto',
+    'parroquia': 'Conocoto',
+    'zona': 'Valle',
+    'activo': true,
+  },
+  {
+    'id': 'cumbaya',
+    'nombre': 'Cumbayá',
+    'parroquia': 'Cumbayá',
+    'zona': 'Valle',
+    'activo': true,
+  },
+  {
+    'id': 'tumbaco',
+    'nombre': 'Tumbaco',
+    'parroquia': 'Tumbaco',
+    'zona': 'Valle',
+    'activo': true,
+  },
+  {
+    'id': 'chillogallo',
+    'nombre': 'Chillogallo',
+    'parroquia': 'Chillogallo',
+    'zona': 'Sur',
+    'activo': true,
+  },
+  {
+    'id': 'guamani',
+    'nombre': 'Guamaní',
+    'parroquia': 'Guamaní',
+    'zona': 'Sur',
+    'activo': true,
+  },
+];
 
-      for (var sec in sectores) {
-        await firestore.collection('sectors').doc(sec['id']).set({
-          'nombre': sec['nombre'],
-          'coordinadorBrigadaId': sec['id'] == 'sec_norte' 
-              ? 'uid_coord_norte' 
-              : (sec['id'] == 'sec_sur' ? 'uid_coord_sur' : null),
-          'creadoEn': DateTime.now().toIso8601String(),
-        });
-      }
-      results['Sectores'] = '3 sectores creados (Norte, Sur, Centro)';
+for (var sec in sectores) {
+  await firestore.collection('sectores').doc(sec['id'] as String).set({
+    'nombre': sec['nombre'],
+    'parroquia': sec['parroquia'],
+    'zona': sec['zona'],
+    'activo': sec['activo'],
+  });
+}
+
+results['Sectores'] = '${sectores.length} sectores creados correctamente';
+
+      
 
       // 2. Crear Usuarios en Firebase Auth y Firestore
       // Lista de usuarios semilla
@@ -58,7 +127,7 @@ class DummyDataService {
           'apellidos': 'Gómez Castro',
           'telefono': '0997776666',
           'rol': 'coordinador_brigada',
-          'sectorId': 'sec_norte',
+          'sectorId': 'la_carolina',
         },
         {
           'email': 'coordinador.sur@test.com',
@@ -67,7 +136,7 @@ class DummyDataService {
           'apellidos': 'Torres Ortiz',
           'telefono': '0996665555',
           'rol': 'coordinador_brigada',
-          'sectorId': 'sec_sur',
+          'sectorId': 'quitumbe',
         },
         {
           'email': 'vacunador.norte1@test.com',
@@ -76,7 +145,7 @@ class DummyDataService {
           'apellidos': 'Pazmiño Mora',
           'telefono': '0995554444',
           'rol': 'vacunador',
-          'sectorId': 'sec_norte',
+          'sectorId': 'la_carolina',
         },
         {
           'email': 'vacunador.sur1@test.com',
@@ -85,7 +154,7 @@ class DummyDataService {
           'apellidos': 'Luna Vélez',
           'telefono': '0994443333',
           'rol': 'vacunador',
-          'sectorId': 'sec_sur',
+          'sectorId': 'quitumbe',
         }
       ];
 
@@ -108,7 +177,7 @@ class DummyDataService {
           // Registrar en Auth
           final cred = await secondaryAuth.createUserWithEmailAndPassword(
             email: u['email'] as String,
-            password: 'password123', // Contraseña genérica de prueba para todos
+            password: 'Ecuador2026', // Contraseña genérica de prueba para todos
           );
           uid = cred.user!.uid;
         } on FirebaseAuthException catch (authErr) {
@@ -122,7 +191,7 @@ class DummyDataService {
             rethrow;
           }
         }
-
+//users
         // Registrar en Firestore
         final userModel = UserModel(
           uid: uid,
@@ -133,12 +202,12 @@ class DummyDataService {
           correo: u['email'] as String,
           rol: u['rol'] as String,
           sectorId: u['sectorId'],
-          cambioPasswordObligatorio: false, // Listo para usar, sin obligar cambio para agilizar pruebas
+          cambioPassword: true, // Listo para usar, sin obligar cambio para agilizar pruebas
         );
 
-        await firestore.collection('users').doc(uid).set(userModel.toMap());
+        await firestore.collection('usuarios').doc(uid).set(userModel.toMap());
       }
-      results['Usuarios'] = 'Usuarios creados con contraseña genérica: "password123"';
+      results['Usuarios'] = 'Usuarios creados con contraseña genérica: "Ecuador2026"';
 
       // 3. Crear algunos registros históricos de vacunación de ejemplo
       final vacunacionesSemilla = [
@@ -158,7 +227,7 @@ class DummyDataService {
           'longitud': -78.467832,
           'fechaHora': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
           'vacunadorId': 'vacunador_norte_demo',
-          'sectorId': 'sec_norte',
+          'sectorId': 'la_carolina',
         },
         {
           'id': 'vac_demo_2',
@@ -176,12 +245,12 @@ class DummyDataService {
           'longitud': -78.489124,
           'fechaHora': DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
           'vacunadorId': 'vacunador_sur_demo',
-          'sectorId': 'sec_sur',
+          'sectorId': 'quitumbe',
         }
       ];
 
       for (var v in vacunacionesSemilla) {
-        await firestore.collection('vaccinations').doc(v['id'] as String).set(v);
+        await firestore.collection('vacunaciones').doc(v['id'] as String).set(v);
       }
       results['Vacunaciones'] = '2 vacunaciones de prueba cargadas con coordenadas en mapa';
 

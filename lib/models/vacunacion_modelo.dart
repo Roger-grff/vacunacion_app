@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VaccinationModel {
   final String id;
-  final String propietarioNombre;
+  final String nombrePropietario;
   final String propietarioCedula;
   final String propietarioTelefono;
   final String mascotaTipo; // 'perro' | 'gato'
@@ -21,7 +21,7 @@ class VaccinationModel {
 
   VaccinationModel({
     required this.id,
-    required this.propietarioNombre,
+    required this.nombrePropietario,
     required this.propietarioCedula,
     required this.propietarioTelefono,
     required this.mascotaTipo,
@@ -37,6 +37,7 @@ class VaccinationModel {
     required this.vacunadorId,
     required this.sectorId,
     this.syncState = 1,
+    
   });
 
   factory VaccinationModel.fromMap(Map<String, dynamic> map, String id) {
@@ -52,7 +53,7 @@ class VaccinationModel {
 
     return VaccinationModel(
       id: id,
-      propietarioNombre: map['propietarioNombre'] ?? '',
+      nombrePropietario: map['nombrePropietario'] ?? '',
       propietarioCedula: map['propietarioCedula'] ?? '',
       propietarioTelefono: map['propietarioTelefono'] ?? '',
       mascotaTipo: map['mascotaTipo'] ?? 'perro',
@@ -70,13 +71,14 @@ class VaccinationModel {
       vacunadorId: map['vacunadorId'] ?? '',
       sectorId: map['sectorId'] ?? '',
       syncState: map['syncState'] ?? 1,
+      
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'propietarioNombre': propietarioNombre,
+      'nombrePropietario': nombrePropietario,
       'propietarioCedula': propietarioCedula,
       'propietarioTelefono': propietarioTelefono,
       'mascotaTipo': mascotaTipo,
@@ -92,6 +94,7 @@ class VaccinationModel {
       'vacunadorId': vacunadorId,
       'sectorId': sectorId,
       'syncState': syncState,
+      
     };
   }
 
@@ -102,7 +105,7 @@ class VaccinationModel {
   }) {
     return VaccinationModel(
       id: id,
-      propietarioNombre: propietarioNombre,
+      nombrePropietario: nombrePropietario,
       propietarioCedula: propietarioCedula,
       propietarioTelefono: propietarioTelefono,
       mascotaTipo: mascotaTipo,

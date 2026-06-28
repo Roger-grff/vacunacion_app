@@ -9,16 +9,6 @@ import '../models/vacunacion_modelo.dart';
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Generador de contraseña inicial aleatoria con prefijo "VTE"
-  String generateTempPassword() {
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    final random = Random();
-    final buffer = StringBuffer('VTE');
-    for (var i = 0; i < 6; i++) {
-      buffer.write(chars[random.nextInt(chars.length)]);
-    }
-    return buffer.toString();
-  }
 
   // Crear usuario (Coordinador o Vacunador) usando una app secundaria de Firebase para no desloguear al coordinador actual
   Future<String> createUser({
@@ -60,10 +50,10 @@ class FirestoreService {
         correo: correo,
         rol: rol,
         sectorId: sectorId,
-        cambioPasswordObligatorio: true, // Forzar cambio en primer inicio
+        cambioPassword: true, // Forzar cambio en primer inicio
       );
 
-      await _firestore.collection('users').doc(uid).set(userModel.toMap());
+      await _firestore.collection('usuarios').doc(uid).set(userModel.toMap());
 
       return uid;
     } catch (e) {
@@ -78,7 +68,7 @@ class FirestoreService {
 
   // Obtener usuarios por rol (o todos si se omiten parámetros)
   Stream<List<UserModel>> getUsers({String? sectorId, String? rol}) {
-    Query query = _firestore.collection('users');
+    Query query = _firestore.collection('usuarios');
     if (sectorId != null) {
       query = query.where('sectorId', isEqualTo: sectorId);
     }
@@ -95,50 +85,49 @@ class FirestoreService {
 
   // Actualizar sector de un usuario (para reasignación de vacunadores)
   Future<void> updateUserSector(String uid, String? sectorId) async {
-    await _firestore.collection('users').doc(uid).update({
+    await _firestore.collection('usuarios').doc(uid).update({
       'sectorId': sectorId,
     });
   }
 
   // Actualizar datos completos de un usuario en Firestore
   Future<void> updateUser(UserModel user) async {
-    await _firestore.collection('users').doc(user.uid).update(user.toMap());
+    await _firestore.collection('usuarios').doc(user.uid).update(user.toMap());
   }
 
   // Eliminar el documento de usuario en Firestore (revoca su acceso)
   Future<void> deleteUser(String uid) async {
-    await _firestore.collection('users').doc(uid).delete();
+    await _firestore.collection('usuarios').doc(uid).delete();
   }
 
   // --- SECTORES ---
 
   // Crear Sector
-  Future<void> createSector(String nombre) async {
-    final docRef = _firestore.collection('sectors').doc();
-    final sector = SectorModel(
-      id: docRef.id,
-      nombre: nombre,
-      creadoEn: DateTime.now(),
-    );
-    await docRef.set(sector.toMap());
-  }
+  Future<void> createSector({
+  required String nombre,
+  required String parroquia,
+  required String zona,
+}) async {
 
-  // Asignar Coordinador de Brigada a un sector
-  Future<void> assignCoordinatorToSector(String sectorId, String coordinatorId) async {
-    // 1. Asignar el coordinador en el sector
-    await _firestore.collection('sectors').doc(sectorId).update({
-      'coordinadorBrigadaId': coordinatorId,
-    });
+  final docRef =
+      _firestore.collection('sectores').doc();
 
-    // 2. Actualizar el sectorId en el usuario coordinador
-    await _firestore.collection('users').doc(coordinatorId).update({
-      'sectorId': sectorId,
-    });
-  }
+  final sector = SectorModel(
+    id: docRef.id,
+    nombre: nombre,
+    parroquia: parroquia,
+    zona: zona,
+    activo: true,
+  );
+
+  await docRef.set(sector.toMap());
+}
+
+ 
 
   // Stream de Sectores
   Stream<List<SectorModel>> getSectors() {
-    return _firestore.collection('sectors').orderBy('creadoEn', descending: true).snapshots().map((snapshot) {
+    return _firestore.collection('sectores').orderBy('nombre', descending: true).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         return SectorModel.fromMap(doc.data(), doc.id);
       }).toList();
@@ -149,17 +138,39 @@ class FirestoreService {
 
   // Guardar registro de vacunación en Firestore
   Future<void> uploadVaccinationRecord(VaccinationModel vaccination) async {
-    await _firestore.collection('vaccinations').doc(vaccination.id).set(vaccination.toMap());
+    await _firestore.collection('vacunaciones').doc(vaccination.id).set(vaccination.toMap());
   }
 
   // Editar / Corregir registro de vacunación
   Future<void> updateVaccinationRecord(VaccinationModel vaccination) async {
-    await _firestore.collection('vaccinations').doc(vaccination.id).update(vaccination.toMap());
+    await _firestore.collection('vacunaciones').doc(vaccination.id).update(vaccination.toMap());
   }
 
-  // Obtener vacunaciones en base al rol y permisos
+  Future<UserModel?> getUser(String uid) async {
+
+  final doc =
+      await _firestore
+          .collection('usuarios')
+          .doc(uid)
+          .get();
+
+  if (!doc.exists) return null;
+
+  return UserModel.fromMap(
+      doc.data()!,
+      doc.id);
+}
+
+Future<SectorModel?> getSector(String id) async {
+  final doc = await _firestore.collection('sectores').doc(id).get();
+  if (!doc.exists) return null;
+
+  return SectorModel.fromMap(doc.data()!, doc.id);
+}
+
+// Obtener vacunaciones en base al rol y permisos
   Stream<List<VaccinationModel>> getVaccinations({String? sectorId, String? vacunadorId}) {
-    Query query = _firestore.collection('vaccinations');
+    Query query = _firestore.collection('vacunaciones');
 
     if (sectorId != null) {
       query = query.where('sectorId', isEqualTo: sectorId);

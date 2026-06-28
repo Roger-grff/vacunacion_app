@@ -58,7 +58,7 @@ class _DashboardViewState extends State<DashboardView> {
     for (var v in allVaccinations) {
       final sectorName = sectorProvider.sectors.firstWhere(
         (s) => s.id == v.sectorId,
-        orElse: () => SectorModel(id: '', nombre: 'Sector Desconocido', creadoEn: DateTime.now()),
+        orElse: () => SectorModel(id: '', nombre: 'Sector Desconocido', parroquia: '', zona: '', activo: false),
       ).nombre;
       sectorCounts[sectorName] = (sectorCounts[sectorName] ?? 0) + 1;
     }
@@ -66,7 +66,7 @@ class _DashboardViewState extends State<DashboardView> {
     // Vacunaciones por vacunador (solo para coordinadores)
     final vacunadorCounts = <String, int>{};
     for (var v in allVaccinations) {
-      final name = v.propietarioNombre.isNotEmpty ? v.vacunadorId : 'Vacunador';
+      final name = v.nombrePropietario.isNotEmpty ? v.vacunadorId : 'Vacunador';
       vacunadorCounts[name] = (vacunadorCounts[name] ?? 0) + 1;
     }
 

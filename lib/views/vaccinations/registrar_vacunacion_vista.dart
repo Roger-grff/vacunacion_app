@@ -43,7 +43,7 @@ class _RegisterVaccinationViewState extends State<RegisterVaccinationView> {
     super.initState();
     if (widget.vaccinationToEdit != null) {
       final v = widget.vaccinationToEdit!;
-      _ownerNameCtrl.text = v.propietarioNombre;
+      _ownerNameCtrl.text = v.nombrePropietario;
       _ownerCedulaCtrl.text = v.propietarioCedula;
       _ownerPhoneCtrl.text = v.propietarioTelefono;
       _petNameCtrl.text = v.mascotaNombre;

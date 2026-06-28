@@ -14,7 +14,7 @@ class AuthProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _authService.currentUser != null && _userModel != null;
-  bool get forcePasswordChange => _userModel?.cambioPasswordObligatorio ?? false;
+  bool get forcePasswordChange => _userModel?.cambioPassword ?? false;
 
   AuthProvider() {
     _initUser();
@@ -76,7 +76,7 @@ class AuthProvider with ChangeNotifier {
           correo: _userModel!.correo,
           rol: _userModel!.rol,
           sectorId: _userModel!.sectorId,
-          cambioPasswordObligatorio: false,
+          cambioPassword: false,
         );
       }
       _isLoading = false;

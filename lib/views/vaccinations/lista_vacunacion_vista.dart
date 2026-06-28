@@ -155,7 +155,7 @@ class _VaccinationListViewState extends State<VaccinationListView> {
                         const SizedBox(height: 8),
                         // Detalles de Propietario
                         Text(
-                          'Propietario: ${record.propietarioNombre} (C.I: ${record.propietarioCedula})',
+                          'Propietario: ${record.nombrePropietario} (C.I: ${record.propietarioCedula})',
                           style: TextStyle(color: Colors.grey[700], fontSize: 13),
                         ),
                         Text(

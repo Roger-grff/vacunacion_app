@@ -7,7 +7,7 @@ class UserModel {
   final String correo;
   final String rol; // 'coordinador_campana', 'coordinador_brigada', 'vacunador'
   final String? sectorId;
-  final bool cambioPasswordObligatorio;
+  final bool cambioPassword;
 
   UserModel({
     required this.uid,
@@ -18,7 +18,7 @@ class UserModel {
     required this.correo,
     required this.rol,
     this.sectorId,
-    required this.cambioPasswordObligatorio,
+    required this.cambioPassword,
   });
 
   String get nombreCompleto => '$nombres $apellidos';
@@ -33,7 +33,7 @@ class UserModel {
       correo: map['correo'] ?? '',
       rol: map['rol'] ?? 'vacunador',
       sectorId: map['sectorId'],
-      cambioPasswordObligatorio: map['cambioPasswordObligatorio'] ?? true,
+      cambioPassword: map['cambioPassword'] ?? true,
     );
   }
 
@@ -46,7 +46,7 @@ class UserModel {
       'correo': correo,
       'rol': rol,
       'sectorId': sectorId,
-      'cambioPasswordObligatorio': cambioPasswordObligatorio,
+      'cambioPassword': cambioPassword,
     };
   }
 }

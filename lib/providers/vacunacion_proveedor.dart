@@ -95,7 +95,7 @@ class VaccinationProvider with ChangeNotifier {
         // B. Crear modelo con URL online
         final vaccination = VaccinationModel(
           id: vaccinationId,
-          propietarioNombre: propietarioNombre,
+          nombrePropietario: propietarioNombre,
           propietarioCedula: propietarioCedula,
           propietarioTelefono: propietarioTelefono,
           mascotaTipo: mascotaTipo,
@@ -141,7 +141,7 @@ class VaccinationProvider with ChangeNotifier {
       // B. Crear modelo con la ruta local persistida
       final vaccinationOffline = VaccinationModel(
         id: vaccinationId,
-        propietarioNombre: propietarioNombre,
+        nombrePropietario: propietarioNombre,
         propietarioCedula: propietarioCedula,
         propietarioTelefono: propietarioTelefono,
         mascotaTipo: mascotaTipo,

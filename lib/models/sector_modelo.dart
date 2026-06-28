@@ -1,42 +1,34 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class SectorModel {
   final String id;
   final String nombre;
-  final String? coordinadorBrigadaId;
-  final DateTime creadoEn;
+  final String parroquia;
+  final String zona;
+  final bool activo;
 
   SectorModel({
     required this.id,
     required this.nombre,
-    this.coordinadorBrigadaId,
-    required this.creadoEn,
+    required this.parroquia,
+    required this.zona,
+    required this.activo,
   });
 
   factory SectorModel.fromMap(Map<String, dynamic> map, String id) {
-    DateTime parseDateTime(dynamic value) {
-      if (value is Timestamp) {
-        return value.toDate();
-      } else if (value is String) {
-        return DateTime.parse(value);
-      } else {
-        return DateTime.now();
-      }
-    }
-
     return SectorModel(
       id: id,
       nombre: map['nombre'] ?? '',
-      coordinadorBrigadaId: map['coordinadorBrigadaId'],
-      creadoEn: parseDateTime(map['creadoEn']),
+      parroquia: map['parroquia'] ?? '',
+      zona: map['zona'] ?? '',
+      activo: map['activo'] ?? true,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'nombre': nombre,
-      'coordinadorBrigadaId': coordinadorBrigadaId,
-      'creadoEn': creadoEn.toIso8601String(), // Se puede guardar como String o Timestamp en Firestore
+      'parroquia': parroquia,
+      'zona': zona,
+      'activo': activo,
     };
   }
 }

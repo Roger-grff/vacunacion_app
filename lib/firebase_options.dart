@@ -62,7 +62,6 @@ class DefaultFirebaseOptions {
     projectId: 'app-gamer-77b9f',
     storageBucket: 'app-gamer-77b9f.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAgCWrXhrmRNOWCTwsQfGaUZZ_8hROE2OM',
     appId: '1:661793489539:ios:086b6b2897f351c3aed1b6',
