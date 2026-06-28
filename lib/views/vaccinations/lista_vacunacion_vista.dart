@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,7 @@ import '../../providers/vacunacion_proveedor.dart';
 import '../../models/vacunacion_modelo.dart';
 import '../../models/usuario_modelo.dart';
 import 'registrar_vacunacion_vista.dart';
+import 'detalle_vacunacion_vista.dart';
 
 class VaccinationListView extends StatefulWidget {
   const VaccinationListView({super.key});
@@ -105,112 +107,200 @@ class _VaccinationListViewState extends State<VaccinationListView> {
                 final dateFormatted = DateFormat('dd/MM/yyyy HH:mm').format(record.fechaHora);
 
                 return Card(
-                  elevation: 2,
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            // Tipo de mascota
-                            Icon(
-                              record.mascotaTipo == 'perro' ? Icons.pets : Icons.cruelty_free,
-                              color: record.mascotaTipo == 'perro' ? Colors.brown : Colors.orange,
-                              size: 28,
-                            ),
-                            const SizedBox(width: 8),
-                            // Nombre mascota
-                            Text(
-                              record.mascotaNombre.toUpperCase(),
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                            const Spacer(),
-                            // Estado de sincronización
-                            if (isOffline)
-                              const Tooltip(
-                                message: 'Guardado localmente (Offline)',
-                                child: Chip(
-                                  label: Text('Offline', style: TextStyle(fontSize: 10, color: Colors.white)),
-                                  backgroundColor: Colors.orange,
-                                  padding: EdgeInsets.zero,
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  elevation: 3,
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => DetalleVacunacionVista(record: record),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Foto mascota
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: _buildMascotaFoto(record.fotoUrl, record.mascotaTipo),
+                          ),
+                          const SizedBox(width: 12),
+                          // Info central
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      record.mascotaTipo == 'perro' ? Icons.pets : Icons.cruelty_free,
+                                      color: record.mascotaTipo == 'perro' ? Colors.brown : Colors.orange,
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        record.mascotaNombre.toUpperCase(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    if (isOffline)
+                                      const Chip(
+                                        label: Text(
+                                          'Offline',
+                                          style: TextStyle(fontSize: 9, color: Colors.white, fontWeight: FontWeight.bold),
+                                        ),
+                                        backgroundColor: Colors.orange,
+                                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 0),
+                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      )
+                                    else
+                                      const Icon(Icons.cloud_done, color: Colors.green, size: 18),
+                                  ],
                                 ),
-                              )
-                            else
-                              const Icon(Icons.cloud_done, color: Colors.green, size: 20),
-                          ],
-                        ),
-                        const Divider(),
-                        // Detalles de Mascota
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Mascota: ${record.mascotaTipo == 'perro' ? 'Perro' : 'Gato'} • ${record.mascotaSexo} • ${record.mascotaEdad} años'),
-                            Text('Vacuna: ${record.vacunaAplicada}', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C5364))),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        // Detalles de Propietario
-                        Text(
-                          'Propietario: ${record.nombrePropietario} (C.I: ${record.propietarioCedula})',
-                          style: TextStyle(color: Colors.grey[700], fontSize: 13),
-                        ),
-                        Text(
-                          'Teléfono: ${record.propietarioTelefono}',
-                          style: TextStyle(color: Colors.grey[700], fontSize: 13),
-                        ),
-                        const SizedBox(height: 4),
-                        // Observaciones
-                        if (record.observaciones.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            child: Text(
-                              'Obs: ${record.observaciones}',
-                              style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 12, color: Colors.grey),
+                                const SizedBox(height: 6),
+                                Text(
+                                  '${record.mascotaTipo == 'perro' ? 'Perro' : 'Gato'} • ${record.mascotaSexo} • ${record.mascotaEdad} años',
+                                  style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 4),
+                                RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(fontSize: 13, color: Colors.black),
+                                    children: [
+                                      const TextSpan(text: 'Vacuna: '),
+                                      TextSpan(
+                                        text: record.vacunaAplicada,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF2C5364),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Dueño: ${record.nombrePropietario}',
+                                  style: TextStyle(color: Colors.grey[800], fontSize: 13),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 6),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.location_on, size: 12, color: Color(0xFF2C5364)),
+                                    const SizedBox(width: 2),
+                                    Expanded(
+                                      child: Text(
+                                        '[${record.latitud.toStringAsFixed(4)}, ${record.longitud.toStringAsFixed(4)}]',
+                                        style: const TextStyle(fontSize: 11, color: Color(0xFF2C5364)),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    Text(
+                                      dateFormatted,
+                                      style: TextStyle(fontSize: 11, color: Colors.grey[500]),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                        const SizedBox(height: 8),
-                        // Ubicación y Fecha
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '📍 [${record.latitud.toStringAsFixed(4)}, ${record.longitud.toStringAsFixed(4)}]',
-                              style: const TextStyle(fontSize: 11, color: Color(0xFF2C5364)),
-                            ),
-                            Text(
-                              dateFormatted,
-                              style: TextStyle(fontSize: 11, color: Colors.grey[500]),
-                            ),
-                          ],
-                        ),
-                        
-                        // Botón de Edición
-                        if (canEdit) ...[
-                          const Divider(),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton.icon(
-                              onPressed: () => _navigateToEdit(record),
-                              icon: const Icon(Icons.edit_outlined, size: 16),
-                              label: const Text('Corregir / Editar Registro'),
-                              style: TextButton.styleFrom(
-                                foregroundColor: const Color(0xFF203A43),
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              ),
-                            ),
-                          ),
-                        ]
-                      ],
+                          // Botón de edición o ver más
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (canEdit)
+                                IconButton(
+                                  icon: const Icon(Icons.edit_outlined, color: Color(0xFF203A43)),
+                                  tooltip: 'Editar Registro',
+                                  onPressed: () => _navigateToEdit(record),
+                                )
+                              else
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 24.0, left: 8.0),
+                                  child: Icon(Icons.chevron_right, color: Colors.grey),
+                                ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 );
               },
             ),
     );
+  }
+
+  Widget _buildMascotaFoto(String fotoUrl, String tipo) {
+    if (fotoUrl.isEmpty) {
+      return Container(
+        width: 60,
+        height: 60,
+        color: tipo == 'perro' ? Colors.brown[100] : Colors.orange[100],
+        child: Icon(
+          tipo == 'perro' ? Icons.pets : Icons.cruelty_free,
+          color: tipo == 'perro' ? Colors.brown[700] : Colors.orange[700],
+          size: 30,
+        ),
+      );
+    }
+
+    if (fotoUrl.startsWith('http') || fotoUrl.startsWith('https')) {
+      return Image.network(
+        fotoUrl,
+        width: 60,
+        height: 60,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(
+          width: 60,
+          height: 60,
+          color: Colors.grey[200],
+          child: const Icon(Icons.broken_image, color: Colors.grey),
+        ),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            width: 60,
+            height: 60,
+            color: Colors.grey[100],
+            child: const Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      return Image.file(
+        File(fotoUrl),
+        width: 60,
+        height: 60,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(
+          width: 60,
+          height: 60,
+          color: Colors.grey[200],
+          child: const Icon(Icons.broken_image, color: Colors.grey),
+        ),
+      );
+    }
   }
 }
 

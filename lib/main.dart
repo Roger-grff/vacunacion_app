@@ -7,14 +7,17 @@ import 'providers/vacunacion_proveedor.dart';
 import 'views/auth/login_vista.dart';
 import 'views/auth/cambiar_contrasena_vista.dart';
 import 'views/shared/pantalla_navegacion_principal.dart';
+import 'firebase_options.dart';
 
 void main() async {
   // Asegurar que los bindings de Flutter estén listos
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Inicialización segura de Firebase para pruebas locales
+  // Inicialización de Firebase para el backend
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } catch (e) {
     print('Firebase initialization warning: $e');
     print('Recuerda configurar Firebase usando flutterfire configure para habilitar el backend.');

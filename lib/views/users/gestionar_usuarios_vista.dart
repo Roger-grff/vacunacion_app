@@ -545,9 +545,12 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 const SizedBox(width: 8),
-                                Text(
-                                  'Sector: $sectorName',
-                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                                Expanded(
+                                  child: Text(
+                                    'Sector: $sectorName',
+                                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ],
                             ),

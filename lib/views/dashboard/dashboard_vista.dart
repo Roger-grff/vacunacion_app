@@ -183,7 +183,14 @@ class _DashboardViewState extends State<DashboardView> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(entry.key, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                  Expanded(
+                                    child: Text(
+                                      entry.key,
+                                      style: const TextStyle(fontWeight: FontWeight.w600),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
                                   Text('${entry.value} (${(percentage * 100).toStringAsFixed(1)}%)'),
                                 ],
                               ),
