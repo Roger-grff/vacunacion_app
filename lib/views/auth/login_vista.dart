@@ -4,7 +4,7 @@ import '../../providers/autenticacion_proveedor.dart';
 import 'cambiar_contrasena_vista.dart';
 import 'recuperar_contrasena_vista.dart';
 import '../shared/pantalla_navegacion_principal.dart';
-import '../../services/datos_prueba_servicio.dart';
+
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -18,68 +18,6 @@ class _LoginViewState extends State<LoginView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  bool _loadingDummyData = false;
-
-  void _setupDummyData() async {
-    setState(() {
-      _loadingDummyData = true;
-    });
-
-    final res = await DummyDataService.loadDummyData();
-
-    setState(() {
-      _loadingDummyData = false;
-    });
-
-    if (mounted) {
-      if (res.containsKey('Error')) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error al cargar datos demo: ${res['Error']}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      } else {
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Row(
-              children: [
-                Icon(Icons.storage, color: Colors.green),
-                SizedBox(width: 8),
-                Text('Base Demo Cargada'),
-              ],
-            ),
-            content: const SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Se cargaron sectores y usuarios semilla.'),
-                  SizedBox(height: 12),
-                  Text('Contraseña para todos:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text('password123', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 16)),
-                  SizedBox(height: 12),
-                  Text('Cuentas de prueba:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text('• Coordinador Campaña:\n  admi@admi.com'),
-                  SizedBox(height: 6),
-                  Text('• Coordinador Brigada (Norte):\n  coordinador.norte@test.com'),
-                  SizedBox(height: 6),
-                  Text('• Vacunador (Norte):\n  vacunador.norte1@test.com'),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Entendido'),
-              ),
-            ],
-          ),
-        );
-      }
-    }
-  }
 
   @override
   void dispose() {
@@ -278,23 +216,6 @@ class _LoginViewState extends State<LoginView> {
                                   ),
                           ),
                         ),
-                        /* const SizedBox(height: 16),
-                        const Divider(),
-                        const SizedBox(height: 8),
-                        TextButton.icon(
-                          onPressed: _loadingDummyData ? null : _setupDummyData,
-                          icon: const Icon(Icons.storage, color: Colors.blueGrey, size: 18),
-                          label: _loadingDummyData
-                              ? const SizedBox(
-                                  height: 16,
-                                  width: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                )
-                              : const Text(
-                                  'Cargar Base de Datos Demo',
-                                  style: TextStyle(color: Colors.blueGrey, fontSize: 13),
-                                ),
-                        ), */
                       ],
                     ),
                   ),
