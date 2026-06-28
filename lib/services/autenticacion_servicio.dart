@@ -39,7 +39,7 @@ class AuthService {
       
       // 2. Actualizar flag en Firestore
       await _firestore.collection('usuarios').doc(user.uid).update({
-        'cambioPasswordObligatorio': false,
+        'cambioPassword': false,
       });
     } else {
       throw Exception('No hay un usuario autenticado para cambiar la contraseña.');
