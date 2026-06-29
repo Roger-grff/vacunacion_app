@@ -5,6 +5,7 @@ import '../../providers/sector_proveedor.dart';
 import '../../models/usuario_modelo.dart';
 import '../../models/sector_modelo.dart';
 import '../../services/firestore_servicio.dart';
+import 'detalle_usuario_vista.dart';
 
 class ManageUsersView extends StatefulWidget {
   const ManageUsersView({super.key});
@@ -16,12 +17,14 @@ class ManageUsersView extends StatefulWidget {
 class _ManageUsersViewState extends State<ManageUsersView> {
   final _firestoreService = FirestoreService();
   
-  // Controladores de Registro
+  // Controladores de Registro y Búsqueda
   final _cedulaCtrl = TextEditingController();
   final _nombresCtrl = TextEditingController();
   final _apellidosCtrl = TextEditingController();
   final _phoneCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
+  final _searchController = TextEditingController();
+  String _searchQuery = "";
 
   @override
   void dispose() {
@@ -30,6 +33,7 @@ class _ManageUsersViewState extends State<ManageUsersView> {
     _apellidosCtrl.dispose();
     _phoneCtrl.dispose();
     _emailCtrl.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -484,6 +488,15 @@ class _ManageUsersViewState extends State<ManageUsersView> {
 
         final users = snapshot.data ?? [];
 
+        final filteredUsers = users.where((u) {
+          final query = _searchQuery.toLowerCase();
+          final fullName = u.nombreCompleto.toLowerCase();
+          final email = u.correo.toLowerCase();
+          final phone = u.telefono;
+          final cedula = u.cedula;
+          return fullName.contains(query) || email.contains(query) || phone.contains(query) || cedula.contains(query);
+        }).toList();
+
         return Scaffold(
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () => _showCreateUserDialog(currentUser),
@@ -492,100 +505,152 @@ class _ManageUsersViewState extends State<ManageUsersView> {
             icon: const Icon(Icons.person_add),
             label: const Text('Crear Usuario'),
           ),
-          body: users.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.people_outline, size: 64, color: Colors.grey[400]),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No hay usuarios registrados.',
-                        style: TextStyle(color: Colors.grey[500], fontSize: 16),
+          body: Column(
+            children: [
+              // Barra de Búsqueda
+              if (users.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (val) {
+                      setState(() {
+                        _searchQuery = val;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Buscar usuario (nombre, correo, cédula, tel)...',
+                      prefixIcon: const Icon(Icons.search, color: Color(0xFF203A43)),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() {
+                                  _searchQuery = "";
+                                });
+                              },
+                            )
+                          : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                    ],
+                    ),
                   ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: users.length,
-                  itemBuilder: (context, index) {
-                    final user = users[index];
-                    
-                    // Encontrar nombre del sector del usuario
-                    final sectorName = sectorProvider.sectors.firstWhere(
-                      (s) => s.id == user.sectorId,
-                      orElse: () => SectorModel(id: '', nombre: 'Sin Asignar', parroquia: '', zona: '', activo: false),
-                    ).nombre;
+                ),
 
-                    String formatRole(String rol) {
-                      if (rol == 'coordinador_campana') return 'Campaña';
-                      if (rol == 'coordinador_brigada') return 'Brigada';
-                      return 'Vacunador';
-                    }
-
-                    return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 6),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      child: ListTile(
-                        title: Text(
-                          user.nombreCompleto.toUpperCase(),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              Expanded(
+                child: users.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Correo: ${user.correo} • Tel: ${user.telefono}'),
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                Chip(
-                                  label: Text(formatRole(user.rol), style: const TextStyle(fontSize: 10)),
-                                  padding: EdgeInsets.zero,
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    'Sector: $sectorName',
-                                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
+                            Icon(Icons.people_outline, size: 64, color: Colors.grey[400]),
+                            const SizedBox(height: 16),
+                            Text(
+                              'No hay usuarios registrados.',
+                              style: TextStyle(color: Colors.grey[500], fontSize: 16),
                             ),
                           ],
                         ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (currentUser.rol == 'coordinador_campana' ||
-                                (currentUser.rol == 'coordinador_brigada' &&
-                                    user.rol == 'vacunador' &&
-                                    user.sectorId == currentUser.sectorId)) ...[
-                              IconButton(
-                                icon: const Icon(Icons.edit_outlined, color: Color(0xFF203A43)),
-                                tooltip: 'Editar Usuario',
-                                onPressed: () => _showEditUserDialog(user, currentUser),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                                tooltip: 'Eliminar Usuario',
-                                onPressed: () => _confirmDeleteUser(user),
-                              ),
-                            ],
-                            if (currentUser.rol == 'coordinador_brigada' && user.rol == 'vacunador')
-                              IconButton(
-                                icon: const Icon(Icons.swap_horiz, color: Color(0xFF203A43)),
-                                tooltip: 'Reasignar / Cambiar Sector',
-                                onPressed: () => _showReassignSectorDialog(user),
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                      )
+                    : filteredUsers.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No se encontraron usuarios con ese criterio.',
+                              style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.all(12),
+                            itemCount: filteredUsers.length,
+                            itemBuilder: (context, index) {
+                              final user = filteredUsers[index];
+                              
+                              // Encontrar nombre del sector del usuario
+                              final sectorName = sectorProvider.sectors.firstWhere(
+                                (s) => s.id == user.sectorId,
+                                orElse: () => SectorModel(id: '', nombre: 'Sin Asignar', parroquia: '', zona: '', activo: false),
+                              ).nombre;
+
+                              String formatRole(String rol) {
+                                if (rol == 'coordinador_campana') return 'Campaña';
+                                if (rol == 'coordinador_brigada') return 'Brigada';
+                                return 'Vacunador';
+                              }
+
+                              return Card(
+                                margin: const EdgeInsets.symmetric(vertical: 6),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                child: ListTile(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => DetalleUsuarioVista(user: user),
+                                      ),
+                                    );
+                                  },
+                                  title: Text(
+                                    user.nombreCompleto.toUpperCase(),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Correo: ${user.correo} • Tel: ${user.telefono}'),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          Chip(
+                                            label: Text(formatRole(user.rol), style: const TextStyle(fontSize: 10)),
+                                            padding: EdgeInsets.zero,
+                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              'Sector: $sectorName',
+                                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (currentUser.rol == 'coordinador_campana' ||
+                                          (currentUser.rol == 'coordinador_brigada' &&
+                                              user.rol == 'vacunador' &&
+                                              user.sectorId == currentUser.sectorId)) ...[
+                                        IconButton(
+                                          icon: const Icon(Icons.edit_outlined, color: Color(0xFF203A43)),
+                                          tooltip: 'Editar Usuario',
+                                          onPressed: () => _showEditUserDialog(user, currentUser),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                                          tooltip: 'Eliminar Usuario',
+                                          onPressed: () => _confirmDeleteUser(user),
+                                        ),
+                                      ],
+                                      if (currentUser.rol == 'coordinador_brigada' && user.rol == 'vacunador')
+                                        IconButton(
+                                          icon: const Icon(Icons.swap_horiz, color: Color(0xFF203A43)),
+                                          tooltip: 'Reasignar / Cambiar Sector',
+                                          onPressed: () => _showReassignSectorDialog(user),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+              ),
+            ],
+          ),
         );
       },
     );

@@ -17,6 +17,15 @@ class VaccinationListView extends StatefulWidget {
 }
 
 class _VaccinationListViewState extends State<VaccinationListView> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = "";
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -69,6 +78,15 @@ class _VaccinationListViewState extends State<VaccinationListView> {
       ...vacProvider.onlineVaccinations,
     ];
 
+    final filteredRecords = allRecords.where((record) {
+      final query = _searchQuery.toLowerCase();
+      final petName = record.mascotaNombre.toLowerCase();
+      final ownerName = record.nombrePropietario.toLowerCase();
+      final ownerCedula = record.propietarioCedula;
+      final vaccine = record.vacunaAplicada.toLowerCase();
+      return petName.contains(query) || ownerName.contains(query) || ownerCedula.contains(query) || vaccine.contains(query);
+    }).toList();
+
     return Scaffold(
       floatingActionButton: user?.rol == 'vacunador'
           ? FloatingActionButton.extended(
@@ -83,25 +101,67 @@ class _VaccinationListViewState extends State<VaccinationListView> {
               label: const Text('Registrar'),
             )
           : null,
-      body: allRecords.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.assignment_outlined, size: 64, color: Colors.grey[400]),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No hay registros de vacunación aún.',
-                    style: TextStyle(color: Colors.grey[500], fontSize: 16),
+      body: Column(
+        children: [
+          // Barra de Búsqueda
+          if (allRecords.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextField(
+                controller: _searchController,
+                onChanged: (val) {
+                  setState(() {
+                    _searchQuery = val;
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: 'Buscar por mascota, dueño, cédula o vacuna...',
+                  prefixIcon: const Icon(Icons.search, color: Color(0xFF203A43)),
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _searchQuery = "";
+                            });
+                          },
+                        )
+                      : null,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                ],
+                ),
               ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(12),
-              itemCount: allRecords.length,
-              itemBuilder: (context, index) {
-                final record = allRecords[index];
+            ),
+
+          Expanded(
+            child: allRecords.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.assignment_outlined, size: 64, color: Colors.grey[400]),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No hay registros de vacunación aún.',
+                          style: TextStyle(color: Colors.grey[500], fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  )
+                : filteredRecords.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No se encontraron registros de vacunación.',
+                          style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(12),
+                        itemCount: filteredRecords.length,
+                        itemBuilder: (context, index) {
+                          final record = filteredRecords[index];
                 final canEdit = _canEditRecord(user, record);
                 final isOffline = record.syncState == 0;
                 final dateFormatted = DateFormat('dd/MM/yyyy HH:mm').format(record.fechaHora);
@@ -242,6 +302,9 @@ class _VaccinationListViewState extends State<VaccinationListView> {
                 );
               },
             ),
+          ),
+        ],
+      ),
     );
   }
 
