@@ -5,6 +5,10 @@
 [![SQLite](https://img.shields.io/badge/SQLite-Local_Cache-blue?logo=sqlite)](https://sqlite.org)
 [![OSM](https://img.shields.io/badge/OpenStreetMap-Mapas-green?logo=openstreetmap)](https://www.openstreetmap.org)
 
+## video 
+
+youtube(Roger Grefa): https://www.youtube.com/watch?v=mj1VC06zkCM
+
 Este repositorio contiene la aplicación móvil oficial de **VacunApp**, una solución tecnológica diseñada para la planificación, ejecución y monitoreo de campañas de vacunación antirrábica en sectores urbanos y rurales. 
 
 La aplicación cuenta con una arquitectura de almacenamiento híbrida (Online/Offline) para permitir el trabajo en zonas remotas sin conectividad a internet, sincronizando los datos automáticamente con **Firebase** una vez que se recupera la red.
