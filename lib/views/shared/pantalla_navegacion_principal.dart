@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../providers/autenticacion_proveedor.dart';
 import '../dashboard/dashboard_vista.dart';
 import '../vaccinations/lista_vacunacion_vista.dart';
@@ -16,7 +15,6 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  final Connectivity _connectivity = Connectivity();
 
   @override
   Widget build(BuildContext context) {
@@ -61,32 +59,28 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Vacunación Canina & Felina'),
+          title: Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Vacunación Canina & Felina',
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.asset(
+                  'assets/logo.jpg',
+                  height: 32,
+                  width: 32,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ],
+          ),
           backgroundColor: const Color(0xFF203A43),
           foregroundColor: Colors.white,
-          actions: [
-            // Indicador de conexión en la barra superior
-            StreamBuilder<List<ConnectivityResult>>(
-              stream: _connectivity.onConnectivityChanged,
-              builder: (context, snapshot) {
-                final results = snapshot.data;
-                final isOnline = results != null &&
-                    results.isNotEmpty &&
-                    results.any((result) => result != ConnectivityResult.none);
-
-                return Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Tooltip(
-                    message: isOnline ? 'Dispositivo Conectado (Online)' : 'Dispositivo Desconectado (Offline)',
-                    child: Icon(
-                      isOnline ? Icons.wifi : Icons.wifi_off,
-                      color: isOnline ? Colors.greenAccent : Colors.redAccent,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
           bottom: TabBar(
             tabs: tabs,
             labelColor: Colors.white,
