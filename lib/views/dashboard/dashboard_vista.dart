@@ -29,7 +29,7 @@ class _DashboardViewState extends State<DashboardView> {
         } else if (user.rol == 'coordinador_brigada') {
           vacProvider.listenToVaccinations(sectorId: user.sectorId);
         } else {
-          vacProvider.listenToVaccinations(vacunadorId: user.uid);
+          vacProvider.listenToVaccinations(vacunadorId: user.nombres);
         }
       }
     });
@@ -234,7 +234,7 @@ class _DashboardViewState extends State<DashboardView> {
                               foregroundColor: Colors.white,
                               child: Icon(Icons.person),
                             ),
-                            title: Text('ID: ${entry.key.substring(0, min(8, entry.key.length))}...'),
+                            title: Text('Nombre: ${sectorProvider.obtenerNombreUsuario(entry.key)}'),
                             trailing: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(

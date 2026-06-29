@@ -19,6 +19,7 @@ class SectorProvider with ChangeNotifier {
   _listenToSectors();
   _listenToCoordinators();
   _listenToVaccinators();
+  _listenToUsers();
 }
   //Filtra 
   // Escuchar cambios en los sectores
@@ -45,6 +46,25 @@ class SectorProvider with ChangeNotifier {
     _vaccinators = usersList;
     notifyListeners();
   });
+}
+
+ List<UserModel> _usuarios = [];
+
+ List<UserModel> get usuarios => _usuarios;
+
+  void _listenToUsers() {
+    _firestoreService.getUsers().listen((usersList) {
+      _usuarios = usersList;
+      notifyListeners();
+    });
+  }
+
+  String obtenerNombreUsuario(String uid) {
+  try {
+    return _usuarios.firstWhere((u) => u.uid == uid).nombreCompleto;
+  } catch (_) {
+    return 'Desconocido';
+  }
 }
 
   // Crear un nuevo sector
@@ -164,6 +184,7 @@ Future<bool> createSector({
   } catch (_) {
     return null;
   }
-}
+ }
+
 }
 
