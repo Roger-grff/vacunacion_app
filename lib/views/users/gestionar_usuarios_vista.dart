@@ -99,11 +99,18 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                       // Selección de Rol (Solo Coordinador de Campaña)
                       if (currentUser.rol == 'coordinador_campana') ...[
                         DropdownButtonFormField<String>(
+                          isExpanded: true,
                           value: selectedRol,
                           decoration: const InputDecoration(labelText: 'Rol'),
                           items: const [
-                            DropdownMenuItem(value: 'coordinador_brigada', child: Text('Coordinador de Brigada')),
-                            DropdownMenuItem(value: 'vacunador', child: Text('Vacunador')),
+                            DropdownMenuItem(
+                              value: 'coordinador_brigada',
+                              child: Text('Coordinador de Brigada', overflow: TextOverflow.ellipsis),
+                            ),
+                            DropdownMenuItem(
+                              value: 'vacunador',
+                              child: Text('Vacunador', overflow: TextOverflow.ellipsis),
+                            ),
                           ],
                           onChanged: (v) {
                             setDialogState(() {
@@ -120,10 +127,14 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                       // Selección de Sector (Solo si es vacunador creado por Campaña)
                       if (currentUser.rol == 'coordinador_campana' && selectedRol == 'vacunador') ...[
                         DropdownButtonFormField<String>(
+                          isExpanded: true,
                           value: selectedSectorId,
                           decoration: const InputDecoration(labelText: 'Asignar Sector'),
                           items: sectorProvider.sectors.map((sector) {
-                            return DropdownMenuItem(value: sector.id, child: Text(sector.nombre));
+                            return DropdownMenuItem(
+                              value: sector.id,
+                              child: Text(sector.nombre, overflow: TextOverflow.ellipsis),
+                            );
                           }).toList(),
                           onChanged: (v) => setDialogState(() => selectedSectorId = v),
                         ),
@@ -296,11 +307,18 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                       // Selección de Rol (Solo Coordinador de Campaña y si no es el administrador mismo)
                       if (currentUser.rol == 'coordinador_campana' && userToEdit.rol != 'coordinador_campana') ...[
                         DropdownButtonFormField<String>(
+                          isExpanded: true,
                           value: selectedRol,
                           decoration: const InputDecoration(labelText: 'Rol'),
                           items: const [
-                            DropdownMenuItem(value: 'coordinador_brigada', child: Text('Coordinador de Brigada')),
-                            DropdownMenuItem(value: 'vacunador', child: Text('Vacunador')),
+                            DropdownMenuItem(
+                              value: 'coordinador_brigada',
+                              child: Text('Coordinador de Brigada', overflow: TextOverflow.ellipsis),
+                            ),
+                            DropdownMenuItem(
+                              value: 'vacunador',
+                              child: Text('Vacunador', overflow: TextOverflow.ellipsis),
+                            ),
                           ],
                           onChanged: (v) {
                             setDialogState(() {
@@ -316,10 +334,14 @@ class _ManageUsersViewState extends State<ManageUsersView> {
                       // Selección de Sector (Solo si es vacunador)
                       if (selectedRol == 'vacunador') ...[
                         DropdownButtonFormField<String>(
+                          isExpanded: true,
                           value: selectedSectorId,
                           decoration: const InputDecoration(labelText: 'Asignar Sector'),
                           items: sectorProvider.sectors.map((sector) {
-                            return DropdownMenuItem(value: sector.id, child: Text(sector.nombre));
+                            return DropdownMenuItem(
+                              value: sector.id,
+                              child: Text(sector.nombre, overflow: TextOverflow.ellipsis),
+                            );
                           }).toList(),
                           onChanged: (v) => setDialogState(() => selectedSectorId = v),
                         ),

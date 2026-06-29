@@ -299,6 +299,7 @@ class _RegisterVaccinationViewState extends State<RegisterVaccinationView> {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
+                    isExpanded: true,
                     value: _petSex,
                     decoration: const InputDecoration(labelText: 'Sexo'),
                     items: const [
